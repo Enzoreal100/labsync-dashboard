@@ -1,0 +1,103 @@
+/* ==========================================================================
+   Área Principal
+   ========================================================================== */
+.main-area {
+    padding-left: 32px;
+    padding-right: 32px;
+    background: transparent !important;
+}
+
+.card {
+    background-color: #0f728c !important;
+    background: #0f728c !important;
+    color: white;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card * {
+    background: transparent !important;
+}
+
+.card .table {
+    background-color: transparent !important;
+}
+
+.card h5,
+.card h6,
+.card p,
+.card span,
+.card div,
+.card small,
+.card label {
+    color: #FFFFFF !important;
+}
+
+.input-group-text {
+    color: #FFFFFF !important;
+}
+
+.stat-card .stat-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    font-size: 22px;
+}
+
+.stat-card .stat-icon--accent {
+    background-color: var(--dasa-red-accent);
+}
+
+.stat-card h3 {
+    font-size: 2.25rem;
+    color: #FFFFFF !important;
+}
+
+.stat-card .text-success,
+.stat-card .text-white,
+.stat-card .text-white-50,
+.stat-card small {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ==========================================================================
+   Tabelas
+   ========================================================================== */
+.table {
+    --bs-table-bg: transparent; 
+    --bs-table-color: #FFFFFF;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.1);
+    --bs-table-striped-color: #FFFFFF;
+}
+
+.table th {
+    color: #FFFFFF !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.table td {
+    color: #FFFFFF !important;
+}
+
+.table th, .table td {
+    padding: 1rem;
+    border-color: var(--dasa-border);
+}
+
+.table tbody tr td,
+.table tbody tr th,
+.table thead tr th {
+    color: #FFFFFF !important;
+}
+

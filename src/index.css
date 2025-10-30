@@ -1,0 +1,188 @@
+/* ==========================================================================
+   Paleta de Cores e Tipografia DASA
+   ========================================================================== */
+:root {
+    --dasa-dark-blue: #0D274D;
+    --dasa-red-accent: rgb(230, 146, 94);
+    --dasa-light-blue-accent: #5AC3E5;
+    --dasa-card-bg: #0f728c;
+    --dasa-border: rgba(255, 255, 255, 0.1);
+    --dasa-white: #FFFFFF;
+    --dasa-white-50: rgba(255, 255, 255, 0.5);
+
+    --bs-primary: var(--dasa-dark-blue);
+    --bs-info: var(--dasa-light-blue-accent);
+    --bs-font-sans-serif: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* ==========================================================================
+   Reset Básico e Layout
+   ========================================================================== */
+body {
+    background: linear-gradient(2000deg, #259bbb, #ff914d) !important;
+    background-attachment: fixed !important;
+    color: var(--dasa-white);
+    font-family: var(--bs-font-sans-serif);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    background: linear-gradient(2000deg, #259bbb, #ff914d) !important;
+}
+
+#root {
+    min-height: 100vh;
+    background: transparent !important;
+}
+
+.app-wrapper {
+    min-height: 100vh;
+    background: transparent !important;
+}
+
+/* ==========================================================================
+   Campos de formulário
+   ========================================================================== */
+.form-control, .form-select {
+    background-color: transparent !important;
+    color: #FFFFFF !important;
+    border-color: var(--dasa-border) !important;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--dasa-light-blue-accent), 0.25);
+    border-color: var(--dasa-light-blue-accent) !important;
+}
+
+.form-select option {
+    background-color: var(--dasa-dark-blue);
+    color: #FFFFFF !important;
+}
+
+/* ==========================================================================
+   Badges de Status
+   ========================================================================== */
+.badge {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Atividade Recente
+   ========================================================================== */
+.activity-list .list-group-item {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--dasa-border);
+}
+
+.activity-list .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   Legenda do Gráfico
+   ========================================================================== */
+.legend-item {
+    color: var(--dasa-white-50);
+}
+
+.legend-item-swatch {
+    width: 12px;
+    height: 12px;
+    display: inline-block;
+    border-radius: 3px;
+    margin-right: 8px;
+}
+
+/* ==========================================================================
+   Componentes de Input
+   ========================================================================== */
+.input-group .input-group-text {
+    background-color: transparent;
+    border-color: var(--dasa-border);
+    border-right: 0;
+    color: var(--dasa-white-50);
+}
+
+.input-group .form-control {
+    border-left: 0;
+}
+
+/* ==========================================================================
+   Checkboxes Customizados
+   ========================================================================== */
+.form-check-input {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: transparent;
+    border: 1px solid var(--dasa-white-50);
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    top: 2px;
+    transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.form-check-input:checked {
+    background-color: var(--dasa-light-blue-accent);
+    border-color: var(--dasa-light-blue-accent);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--dasa-light-blue-accent), 0.25);
+    border-color: var(--dasa-light-blue-accent);
+}
+
+/* ==========================================================================
+   Responsividade
+   ========================================================================== */
+@media (max-width: 576px) {
+  .main-area {
+    padding: 8px !important;
+  }
+  .card {
+    margin-bottom: 16px;
+  }
+  h5 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-area {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .main-area {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .main-area {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+  .card {
+    border-radius: 16px;
+  }
+}
+

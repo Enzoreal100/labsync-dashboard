@@ -1,0 +1,89 @@
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+.sidebar {
+    width: 260px;
+    background: linear-gradient(180deg, rgba(37, 155, 187, 0.8) 0%, rgba(255, 145, 77, 0.8) 100%) !important;
+    backdrop-filter: blur(10px);
+    color: #FFFFFF;
+    box-shadow: none;
+    min-height: 100vh;
+    border-right: none;
+}
+
+.brand {
+    padding: 5px 0;
+    margin-bottom: 0 !important;
+}
+
+.brand img {
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+    margin-right: 10px;
+    opacity: 0.9;
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 4px 0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-link.active {
+    background: rgba(255, 255, 255, 0.25);
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #FFFFFF;
+    transform: translateX(4px);
+}
+
+.sidebar-footer {
+    color: #FFFFFF !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
+}
+
+.sidebar-footer .user div,
+.sidebar-footer .user small {
+    color: #FFFFFF !important;
+}
+
+.sidebar-footer .fw-bold {
+    color: #FFFFFF !important;
+    font-size: 0.95rem;
+}
+
+.sidebar-footer .text-white-50 {
+    color: rgba(255, 255, 255, 0.75) !important;
+    font-size: 0.85rem;
+}
+
+@media(max-width: 992px) {
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 576px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+}
+
