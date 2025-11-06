@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import { itemsAPI } from '../services/api'
 
 function Insumos() {
   const [searchTerm, setSearchTerm] = useState('')

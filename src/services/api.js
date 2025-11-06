@@ -162,51 +162,8 @@ export const usersAPI = {
   }),
 };
 
-// ==================== ITENS/INSUMOS ====================
-export const itemsAPI = {
-  // Buscar todos os itens
-  getAll: () => fetchAPI('/items'),
-  
-  // Buscar item por ID
-  getById: (id) => fetchAPI(`/items/${id}`),
-  
-  // Criar novo item
-  create: (itemData) => fetchAPI('/items', {
-    method: 'POST',
-    body: JSON.stringify(itemData),
-  }),
-  
-  // Atualizar item
-  update: (id, itemData) => fetchAPI(`/items/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(itemData),
-  }),
-  
-  // Deletar item
-  delete: (id) => fetchAPI(`/items/${id}`, {
-    method: 'DELETE',
-  }),
-};
-
-// ==================== ESTATÍSTICAS ====================
-export const statsAPI = {
-  // Buscar estatísticas gerais
-  getGeneral: () => fetchAPI('/stats'),
-  
-  // Buscar estatísticas de estoque
-  getStock: () => fetchAPI('/stats/stock'),
-  
-  // Buscar estatísticas de retiradas
-  getWithdrawals: () => fetchAPI('/stats/withdrawals'),
-  
-  // Buscar estatísticas de usuários
-  getUsers: () => fetchAPI('/stats/users'),
-};
-
 export default {
   logs: logsAPI,
   users: usersAPI,
-  items: itemsAPI,
-  stats: statsAPI,
 };
 

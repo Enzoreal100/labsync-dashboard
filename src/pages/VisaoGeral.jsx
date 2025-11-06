@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
-import { logsAPI, itemsAPI, usersAPI } from '../services/api'
+import { logsAPI, usersAPI } from '../services/api'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend)
 
@@ -58,18 +58,6 @@ function VisaoGeral() {
         // Se não houver dados da API, usar fallback
         console.log('Usando dados de fallback para logs')
         setOrdersData(fallbackOrders)
-      }
-
-      // Buscar estatísticas de itens
-      const itemsResponse = await itemsAPI.getAll()
-      console.log('Items API Response:', itemsResponse)
-      
-      if (itemsResponse.success && itemsResponse.data && Array.isArray(itemsResponse.data)) {
-        const items = itemsResponse.data
-        setStats(prev => ({
-          ...prev,
-          activeItems: items.length.toLocaleString('pt-BR')
-        }))
       }
 
       // Buscar estatísticas de usuários
