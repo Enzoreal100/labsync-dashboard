@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { itemsAPI } from '../services/api'
 
 function Insumos() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('Todos')
   const [categoryFilter, setCategoryFilter] = useState('Todos')
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [novoInsumo, setNovoInsumo] = useState({
     nome: '',
     codigo: '',
@@ -13,13 +15,50 @@ function Insumos() {
     estoqueTotal: ''
   })
 
-  const [insumosData, setInsumosData] = useState([
-    { nome: 'Luva Nitrílica', codigo: 'Cód.003', categoria: 'EPI', estoque: { atual: 50, total: 100 }, status: 'OK' },
-    { nome: 'Álcool 70%', codigo: 'Cód.005', categoria: 'Consumíveis', estoque: { atual: 15, total: 50 }, status: 'Baixo' },
-    { nome: 'Seringa 5ml', codigo: 'Cód.006', categoria: 'Consumíveis', estoque: { atual: 5, total: 25 }, status: 'Crítico' },
-    { nome: 'Máscara N95', codigo: 'Cód.007', categoria: 'EPI', estoque: { atual: 80, total: 100 }, status: 'OK' },
-    { nome: 'Paracetamol 500mg', codigo: 'Cód.008', categoria: 'Medicamentos', estoque: { atual: 200, total: 500 }, status: 'OK' },
-  ])
+  const [insumosData, setInsumosData] = useState([])
+
+  useEffect(() => {
+    fetchInsumos()
+  }, [])
+
+  async function fetchInsumos() {
+    setLoading(true)
+    try {
+      const response = await itemsAPI.getAll()
+      if (response.success && response.data) {
+        const formattedItems = response.data.map(item => ({
+          id: item.id,
+          nome: item.name || item.nome || 'Sem nome',
+          codigo: item.code || item.codigo || `COD-${item.id}`,
+          categoria: item.category || item.categoria || 'Geral',
+          estoque: {
+            atual: item.currentStock || item.estoqueAtual || 0,
+            total: item.maxStock || item.estoqueTotal || 100
+          },
+          status: calcularStatus(
+            item.currentStock || item.estoqueAtual || 0,
+            item.maxStock || item.estoqueTotal || 100
+          )
+        }))
+        setInsumosData(formattedItems)
+      } else {
+        // Dados de fallback
+        setInsumosData([
+          { nome: 'Luva Nitrílica', codigo: 'Cód.003', categoria: 'EPI', estoque: { atual: 50, total: 100 }, status: 'OK' },
+          { nome: 'Álcool 70%', codigo: 'Cód.005', categoria: 'Consumíveis', estoque: { atual: 15, total: 50 }, status: 'Baixo' },
+          { nome: 'Seringa 5ml', codigo: 'Cód.006', categoria: 'Consumíveis', estoque: { atual: 5, total: 25 }, status: 'Crítico' },
+        ])
+      }
+    } catch (error) {
+      console.error('Erro ao buscar insumos:', error)
+      setInsumosData([
+        { nome: 'Luva Nitrílica', codigo: 'Cód.003', categoria: 'EPI', estoque: { atual: 50, total: 100 }, status: 'OK' },
+        { nome: 'Álcool 70%', codigo: 'Cód.005', categoria: 'Consumíveis', estoque: { atual: 15, total: 50 }, status: 'Baixo' },
+      ])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredData = insumosData.filter(item => {
     const matchesSearch = item.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -51,24 +90,46 @@ function Insumos() {
     }))
   }
 
-  const handleAdicionarInsumo = (e) => {
+  const handleAdicionarInsumo = async (e) => {
     e.preventDefault()
     
     const estoqueAtual = parseInt(novoInsumo.estoqueAtual)
     const estoqueTotal = parseInt(novoInsumo.estoqueTotal)
     
-    const insumo = {
-      nome: novoInsumo.nome,
-      codigo: novoInsumo.codigo,
-      categoria: novoInsumo.categoria,
-      estoque: {
-        atual: estoqueAtual,
-        total: estoqueTotal
-      },
+    const itemData = {
+      name: novoInsumo.nome,
+      code: novoInsumo.codigo,
+      category: novoInsumo.categoria,
+      currentStock: estoqueAtual,
+      maxStock: estoqueTotal,
       status: calcularStatus(estoqueAtual, estoqueTotal)
     }
     
-    setInsumosData([...insumosData, insumo])
+    try {
+      const response = await itemsAPI.create(itemData)
+      if (response.success) {
+        // Recarregar dados
+        await fetchInsumos()
+        alert('Insumo adicionado com sucesso!')
+      } else {
+        // Adicionar localmente se a API falhar
+        const insumo = {
+          nome: novoInsumo.nome,
+          codigo: novoInsumo.codigo,
+          categoria: novoInsumo.categoria,
+          estoque: {
+            atual: estoqueAtual,
+            total: estoqueTotal
+          },
+          status: calcularStatus(estoqueAtual, estoqueTotal)
+        }
+        setInsumosData([...insumosData, insumo])
+        alert('Insumo adicionado localmente (API offline)')
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar insumo:', error)
+      alert('Erro ao adicionar insumo. Tente novamente.')
+    }
     
     // Limpar formulário e fechar modal
     setNovoInsumo({

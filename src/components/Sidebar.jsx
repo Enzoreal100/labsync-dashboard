@@ -1,6 +1,9 @@
 import './Sidebar.css'
+import { useAuth } from '../contexts/AuthContext'
 
-function Sidebar({ currentPage, onNavigate }) {
+function Sidebar({ currentPage, onNavigate, onLogout }) {
+  const { user } = useAuth()
+  
   const menuItems = [
     { id: 'visao-geral', icon: 'bi-speedometer2', label: 'Visão Geral' },
     { id: 'insumos', icon: 'bi-box-seam', label: 'Insumos' },
@@ -32,12 +35,20 @@ function Sidebar({ currentPage, onNavigate }) {
       </nav>
 
       <div className="sidebar-footer pt-3">
-        <div className="user d-flex align-items-center">
-          <div>
-            <div className="fw-bold">Admin</div>
-            <small className="text-white-50">Teste</small>
+        <div className="user d-flex align-items-center mb-3">
+          <div className="flex-grow-1">
+            <div className="fw-bold">{user?.name || 'Usuário'}</div>
+            <small className="text-white-50">{user?.id || 'ID não disponível'}</small>
           </div>
         </div>
+        <button 
+          className="btn btn-outline-light btn-sm w-100" 
+          onClick={onLogout}
+          title="Sair do sistema"
+        >
+          <i className="bi bi-box-arrow-right me-2"></i>
+          Sair
+        </button>
       </div>
     </aside>
   )

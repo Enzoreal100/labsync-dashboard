@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js'
 import { Bar, Doughnut } from 'react-chartjs-2'
+import { logsAPI, itemsAPI, usersAPI } from '../services/api'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend)
 
@@ -14,39 +15,81 @@ const DASA_COLORS = {
   danger: '#dc3545'
 }
 
-const API_URL = 'https://homol-labsync.ddns.net/api/logs'
-
 function VisaoGeral() {
   const [ordersData, setOrdersData] = useState([])
   const [chartValues, setChartValues] = useState([420, 480, 530, 500, 610, 700, 740, 680, 720, 760, 800, 860])
+  const [stats, setStats] = useState({
+    stockValue: 'R$ 124.563',
+    activeItems: '8.549',
+    todayWithdrawals: '2.847',
+    monthlyAccess: '45.892'
+  })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     fetchAPIData()
   }, [])
 
   async function fetchAPIData() {
+    setLoading(true)
+    
+    // Dados de fallback padrão
+    const fallbackOrders = [
+      { id: "LOG-1001", user: "Ana Silva", items: 3 },
+      { id: "LOG-1002", user: "Bruno Costa", items: 5 },
+      { id: "LOG-1003", user: "Carla Mendes", items: 2 },
+      { id: "LOG-1004", user: "Daniel Oliveira", items: 4 },
+      { id: "LOG-1005", user: "Elisa Santos", items: 1 }
+    ]
+    
     try {
-      const resp = await fetch(API_URL)
-      if (!resp.ok) throw new Error(`Erro HTTP: ${resp.status}`)
-      const data = await resp.json()
+      // Buscar logs/solicitações
+      const logsResponse = await logsAPI.getAll()
+      console.log('Logs API Response:', logsResponse)
       
-      const formattedOrders = data.slice(0, 5).map(item => ({
-        id: item.id,
-        user: item.user.name,
-        items: item.item.length
-      }))
+      if (logsResponse.success && logsResponse.data && Array.isArray(logsResponse.data) && logsResponse.data.length > 0) {
+        const formattedOrders = logsResponse.data.slice(0, 5).map(item => ({
+          id: item.id || `LOG-${item.id}`,
+          user: item.user?.name || item.userName || 'Usuário Desconhecido',
+          items: item.items?.length || item.itemCount || 0
+        }))
+        setOrdersData(formattedOrders)
+      } else {
+        // Se não houver dados da API, usar fallback
+        console.log('Usando dados de fallback para logs')
+        setOrdersData(fallbackOrders)
+      }
+
+      // Buscar estatísticas de itens
+      const itemsResponse = await itemsAPI.getAll()
+      console.log('Items API Response:', itemsResponse)
       
-      setOrdersData(formattedOrders)
+      if (itemsResponse.success && itemsResponse.data && Array.isArray(itemsResponse.data)) {
+        const items = itemsResponse.data
+        setStats(prev => ({
+          ...prev,
+          activeItems: items.length.toLocaleString('pt-BR')
+        }))
+      }
+
+      // Buscar estatísticas de usuários
+      const usersResponse = await usersAPI.getAll()
+      console.log('Users API Response:', usersResponse)
+      
+      if (usersResponse.success && usersResponse.data && Array.isArray(usersResponse.data)) {
+        const users = usersResponse.data
+        setStats(prev => ({
+          ...prev,
+          monthlyAccess: users.length.toLocaleString('pt-BR')
+        }))
+      }
+
     } catch (err) {
-      console.error("Erro ao buscar API:", err)
-      // Dados de fallback
-      setOrdersData([
-        { id: "PO-1001", user: "Ana Silva", items: 3 },
-        { id: "PO-1002", user: "Bruno Costa", items: 5 },
-        { id: "PO-1003", user: "Carla Mendes", items: 2 },
-        { id: "PO-1004", user: "Daniel Oliveira", items: 4 },
-        { id: "PO-1005", user: "Elisa Santos", items: 1 }
-      ])
+      console.error("Erro ao buscar dados da API:", err)
+      // Sempre garantir que haja dados
+      setOrdersData(fallbackOrders)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -155,7 +198,7 @@ function VisaoGeral() {
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Valor em Estoque</small>
-                <h3 className="mt-1 fw-bold">R$ 124.563</h3>
+                <h3 className="mt-1 fw-bold">{loading ? '...' : stats.stockValue}</h3>
               </div>
               <div className="stat-icon bg-primary text-white">
                 <i className="bi bi-currency-dollar"></i>
@@ -172,7 +215,7 @@ function VisaoGeral() {
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Itens Ativos</small>
-                <h3 className="mt-1 fw-bold">8.549</h3>
+                <h3 className="mt-1 fw-bold">{loading ? '...' : stats.activeItems}</h3>
               </div>
               <div className="stat-icon bg-info text-white">
                 <i className="bi bi-box-seam-fill"></i>
@@ -187,7 +230,7 @@ function VisaoGeral() {
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Retiradas Hoje</small>
-                <h3 className="mt-1 fw-bold">2.847</h3>
+                <h3 className="mt-1 fw-bold">{loading ? '...' : stats.todayWithdrawals}</h3>
               </div>
               <div className="stat-icon stat-icon--accent text-white">
                 <i className="bi bi-basket3-fill"></i>
@@ -202,7 +245,7 @@ function VisaoGeral() {
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Acessos</small>
-                <h3 className="mt-1 fw-bold">45.892</h3>
+                <h3 className="mt-1 fw-bold">{loading ? '...' : stats.monthlyAccess}</h3>
               </div>
               <div className="stat-icon bg-success text-white">
                 <i className="bi bi-person-fill-check"></i>
@@ -258,13 +301,30 @@ function VisaoGeral() {
                   </tr>
                 </thead>
                 <tbody>
-                  {ordersData.map(order => (
-                    <tr key={order.id}>
-                      <td><strong>{order.id}</strong></td>
-                      <td>{order.user}</td>
-                      <td>{order.items}</td>
+                  {loading ? (
+                    <tr>
+                      <td colSpan="3" className="text-center">
+                        <div className="spinner-border spinner-border-sm text-light me-2" role="status">
+                          <span className="visually-hidden">Carregando...</span>
+                        </div>
+                        Carregando dados...
+                      </td>
                     </tr>
-                  ))}
+                  ) : ordersData.length > 0 ? (
+                    ordersData.map(order => (
+                      <tr key={order.id}>
+                        <td><strong>{order.id}</strong></td>
+                        <td>{order.user}</td>
+                        <td>{order.items}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="3" className="text-center text-white-50">
+                        Nenhuma solicitação recente
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>

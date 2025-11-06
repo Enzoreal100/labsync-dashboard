@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
+import { usersAPI } from '../services/api'
 
 function Usuarios() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('Status: Todos')
   const [functionFilter, setFunctionFilter] = useState('Função: Todas')
   const [showModal, setShowModal] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [novoUsuario, setNovoUsuario] = useState({
     nome: '',
     email: '',
@@ -13,13 +15,43 @@ function Usuarios() {
     status: 'Ativo'
   })
 
-  const [usuariosData, setUsuariosData] = useState([
-    { nome: "Ana Silva", id: "U001", email: "ana.silva@dasa.com.br", funcao: "Enfermeira", depto: "UTI", status: "Ativo", ultimoAcesso: "2025-09-20 14:30" },
-    { nome: "Bruno Costa", id: "U002", email: "bruno.costa@dasa.com.br", funcao: "Médico", depto: "Cardiologia", status: "Ativo", ultimoAcesso: "2025-09-20 13:45" },
-    { nome: "Carla Mendes", id: "U003", email: "carla.mendes@dasa.com.br", funcao: "Técnica", depto: "Laboratório", status: "Pendente", ultimoAcesso: "2025-09-19 16:20" },
-    { nome: "Daniel Oliveira", id: "U004", email: "daniel.oliveira@dasa.com.br", funcao: "Farmacêutico", depto: "Farmácia", status: "Inativo", ultimoAcesso: "2025-09-18 10:15" },
-    { nome: "Elisa Santos", id: "U005", email: "elisa.santos@dasa.com.br", funcao: "Administrador", depto: "TI", status: "Ativo", ultimoAcesso: "2025-09-20 15:10" },
-  ])
+  const [usuariosData, setUsuariosData] = useState([])
+
+  useEffect(() => {
+    fetchUsuarios()
+  }, [])
+
+  async function fetchUsuarios() {
+    setLoading(true)
+    try {
+      const response = await usersAPI.getAll()
+      if (response.success && response.data) {
+        const formattedUsers = response.data.map(user => ({
+          id: user.id || `U${user.id}`,
+          nome: user.name || user.nome || 'Sem nome',
+          email: user.email || 'sem-email@dasa.com.br',
+          funcao: user.role || user.funcao || 'Não definida',
+          depto: user.department || user.depto || 'Não definido',
+          status: user.status || 'Ativo',
+          ultimoAcesso: user.lastAccess || user.ultimoAcesso || new Date().toISOString()
+        }))
+        setUsuariosData(formattedUsers)
+      } else {
+        // Dados de fallback
+        setUsuariosData([
+          { nome: "Ana Silva", id: "U001", email: "ana.silva@dasa.com.br", funcao: "Enfermeira", depto: "UTI", status: "Ativo", ultimoAcesso: "2025-09-20 14:30" },
+          { nome: "Bruno Costa", id: "U002", email: "bruno.costa@dasa.com.br", funcao: "Médico", depto: "Cardiologia", status: "Ativo", ultimoAcesso: "2025-09-20 13:45" },
+        ])
+      }
+    } catch (error) {
+      console.error('Erro ao buscar usuários:', error)
+      setUsuariosData([
+        { nome: "Ana Silva", id: "U001", email: "ana.silva@dasa.com.br", funcao: "Enfermeira", depto: "UTI", status: "Ativo", ultimoAcesso: "2025-09-20 14:30" },
+      ])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const filteredData = usuariosData.filter(user => {
     const matchesSearch = user.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -31,9 +63,23 @@ function Usuarios() {
   })
 
   // Função para deletar usuário
-  const handleDeleteUser = (userId, userName) => {
+  const handleDeleteUser = async (userId, userName) => {
     if (window.confirm(`Tem certeza que deseja deletar o usuário ${userName}?`)) {
-      setUsuariosData(usuariosData.filter(user => user.id !== userId))
+      try {
+        const response = await usersAPI.delete(userId)
+        if (response.success) {
+          // Recarregar dados
+          await fetchUsuarios()
+          alert('Usuário deletado com sucesso!')
+        } else {
+          // Deletar localmente se a API falhar
+          setUsuariosData(usuariosData.filter(user => user.id !== userId))
+          alert('Usuário deletado localmente (API offline)')
+        }
+      } catch (error) {
+        console.error('Erro ao deletar usuário:', error)
+        alert('Erro ao deletar usuário. Tente novamente.')
+      }
     }
   }
 
@@ -64,20 +110,42 @@ function Usuarios() {
     }))
   }
 
-  const handleAdicionarUsuario = (e) => {
+  const handleAdicionarUsuario = async (e) => {
     e.preventDefault()
     
-    const usuario = {
-      nome: novoUsuario.nome,
-      id: gerarNovoId(),
+    const userData = {
+      name: novoUsuario.nome,
       email: novoUsuario.email,
-      funcao: novoUsuario.funcao,
-      depto: novoUsuario.depto,
+      role: novoUsuario.funcao,
+      department: novoUsuario.depto,
       status: novoUsuario.status,
-      ultimoAcesso: getDataHoraAtual()
+      lastAccess: getDataHoraAtual()
     }
     
-    setUsuariosData([...usuariosData, usuario])
+    try {
+      const response = await usersAPI.create(userData)
+      if (response.success) {
+        // Recarregar dados
+        await fetchUsuarios()
+        alert('Usuário adicionado com sucesso!')
+      } else {
+        // Adicionar localmente se a API falhar
+        const usuario = {
+          nome: novoUsuario.nome,
+          id: gerarNovoId(),
+          email: novoUsuario.email,
+          funcao: novoUsuario.funcao,
+          depto: novoUsuario.depto,
+          status: novoUsuario.status,
+          ultimoAcesso: getDataHoraAtual()
+        }
+        setUsuariosData([...usuariosData, usuario])
+        alert('Usuário adicionado localmente (API offline)')
+      }
+    } catch (error) {
+      console.error('Erro ao adicionar usuário:', error)
+      alert('Erro ao adicionar usuário. Tente novamente.')
+    }
     
     // Limpar formulário e fechar modal
     setNovoUsuario({
