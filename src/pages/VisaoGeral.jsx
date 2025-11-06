@@ -151,7 +151,7 @@ function VisaoGeral() {
 
       <section className="row g-4 mb-4">
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card stat-card p-3 h-100">
+          <div className="card stat-card h-100">
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Valor em Estoque</small>
@@ -168,7 +168,7 @@ function VisaoGeral() {
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card stat-card p-3 h-100">
+          <div className="card stat-card h-100">
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Itens Ativos</small>
@@ -183,7 +183,7 @@ function VisaoGeral() {
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card stat-card p-3 h-100">
+          <div className="card stat-card h-100">
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Retiradas Hoje</small>
@@ -198,7 +198,7 @@ function VisaoGeral() {
         </div>
 
         <div className="col-12 col-sm-6 col-lg-3">
-          <div className="card stat-card p-3 h-100">
+          <div className="card stat-card h-100">
             <div className="d-flex justify-content-between">
               <div>
                 <small className="text-white-50">Acessos</small>

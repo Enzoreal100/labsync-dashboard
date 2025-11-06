@@ -2,8 +2,8 @@
    Sidebar
    ========================================================================== */
 .sidebar {
-    width: 260px;
-    background: linear-gradient(180deg, rgba(37, 155, 187, 0.8) 0%, rgba(255, 145, 77, 0.8) 100%) !important;
+    width: 240px;
+    background: linear-gradient(200deg, rgba(37, 155, 187, 0.8) 0%, rgba(255, 145, 77, 0.8) 100%) !important;
     backdrop-filter: blur(10px);
     color: #FFFFFF;
     box-shadow: none;

@@ -4,6 +4,14 @@ function Usuarios() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('Status: Todos')
   const [functionFilter, setFunctionFilter] = useState('Função: Todas')
+  const [showModal, setShowModal] = useState(false)
+  const [novoUsuario, setNovoUsuario] = useState({
+    nome: '',
+    email: '',
+    funcao: 'Enfermeira',
+    depto: '',
+    status: 'Ativo'
+  })
 
   const [usuariosData, setUsuariosData] = useState([
     { nome: "Ana Silva", id: "U001", email: "ana.silva@dasa.com.br", funcao: "Enfermeira", depto: "UTI", status: "Ativo", ultimoAcesso: "2025-09-20 14:30" },
@@ -29,6 +37,59 @@ function Usuarios() {
     }
   }
 
+  // Função para gerar ID único
+  const gerarNovoId = () => {
+    const ultimoId = usuariosData.length > 0 
+      ? Math.max(...usuariosData.map(u => parseInt(u.id.replace('U', '')))) 
+      : 0
+    return `U${String(ultimoId + 1).padStart(3, '0')}`
+  }
+
+  // Função para obter data/hora atual formatada
+  const getDataHoraAtual = () => {
+    const now = new Date()
+    const ano = now.getFullYear()
+    const mes = String(now.getMonth() + 1).padStart(2, '0')
+    const dia = String(now.getDate()).padStart(2, '0')
+    const hora = String(now.getHours()).padStart(2, '0')
+    const min = String(now.getMinutes()).padStart(2, '0')
+    return `${ano}-${mes}-${dia} ${hora}:${min}`
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setNovoUsuario(prev => ({
+      ...prev,
+      [name]: value
+    }))
+  }
+
+  const handleAdicionarUsuario = (e) => {
+    e.preventDefault()
+    
+    const usuario = {
+      nome: novoUsuario.nome,
+      id: gerarNovoId(),
+      email: novoUsuario.email,
+      funcao: novoUsuario.funcao,
+      depto: novoUsuario.depto,
+      status: novoUsuario.status,
+      ultimoAcesso: getDataHoraAtual()
+    }
+    
+    setUsuariosData([...usuariosData, usuario])
+    
+    // Limpar formulário e fechar modal
+    setNovoUsuario({
+      nome: '',
+      email: '',
+      funcao: 'Enfermeira',
+      depto: '',
+      status: 'Ativo'
+    })
+    setShowModal(false)
+  }
+
   const [stats, setStats] = useState({
     total: 0,
     ativos: 0,
@@ -48,7 +109,7 @@ function Usuarios() {
 
   const statusBadges = {
     'Ativo': 'bg-success',
-    'Pendente': 'bg-warning text-dark',
+    'Pendente': 'bg-warning',
     'Inativo': 'bg-secondary'
   }
 
@@ -58,12 +119,9 @@ function Usuarios() {
         <h1 className="h2 mb-0 text-white">Gerenciamento de Usuários</h1>
         <div className="d-flex gap-2">
           <button className="btn btn-outline-light btn-sm">
-            <i className="bi bi-upload me-2"></i>Exportar
-          </button>
-          <button className="btn btn-outline-light btn-sm">
             <i className="bi bi-arrow-clockwise me-2"></i>Atualizar
           </button>
-          <button className="btn btn-info">
+          <button className="btn btn-info" onClick={() => setShowModal(true)}>
             <i className="bi bi-plus-circle me-2"></i>Adicionar Usuário
           </button>
         </div>
@@ -237,6 +295,118 @@ function Usuarios() {
           </table>
         </div>
       </div>
+
+      {/* Modal para Adicionar Novo Usuário */}
+      {showModal && (
+        <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content" style={{ backgroundColor: 'var(--dasa-card-bg)', color: 'white' }}>
+              <div className="modal-header border-bottom border-secondary">
+                <h5 className="modal-title">Adicionar Novo Usuário</h5>
+                <button 
+                  type="button" 
+                  className="btn-close btn-close-white" 
+                  onClick={() => setShowModal(false)}
+                ></button>
+              </div>
+              <form onSubmit={handleAdicionarUsuario}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label htmlFor="nome" className="form-label">Nome Completo</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="nome"
+                      name="nome"
+                      value={novoUsuario.nome}
+                      onChange={handleInputChange}
+                      placeholder="Ex: João Silva"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label htmlFor="email" className="form-label">Email</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email"
+                      value={novoUsuario.email}
+                      onChange={handleInputChange}
+                      placeholder="Ex: joao.silva@dasa.com.br"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label htmlFor="funcao" className="form-label">Função</label>
+                      <select
+                        className="form-select"
+                        id="funcao"
+                        name="funcao"
+                        value={novoUsuario.funcao}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="Enfermeira">Enfermeira</option>
+                        <option value="Médico">Médico</option>
+                        <option value="Técnica">Técnica</option>
+                        <option value="Farmacêutico">Farmacêutico</option>
+                        <option value="Administrador">Administrador</option>
+                      </select>
+                    </div>
+                    
+                    <div className="col-md-6 mb-3">
+                      <label htmlFor="depto" className="form-label">Departamento</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="depto"
+                        name="depto"
+                        value={novoUsuario.depto}
+                        onChange={handleInputChange}
+                        placeholder="Ex: UTI"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mb-3">
+                    <label htmlFor="status" className="form-label">Status</label>
+                    <select
+                      className="form-select"
+                      id="status"
+                      name="status"
+                      value={novoUsuario.status}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="Ativo">Ativo</option>
+                      <option value="Pendente">Pendente</option>
+                      <option value="Inativo">Inativo</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="modal-footer border-top border-secondary">
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button type="submit" className="btn btn-info">
+                    <i className="bi bi-plus-circle me-2"></i>Adicionar Usuário
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
 
       <footer className="mt-4 text-white-50 small text-center">
         © LabSync • DASA

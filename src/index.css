@@ -43,6 +43,105 @@ html {
 }
 
 /* ==========================================================================
+   Botões
+   ========================================================================== */
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.3);
+    outline: none;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-info {
+    background-color: var(--dasa-light-blue-accent) !important;
+    border-color: var(--dasa-light-blue-accent) !important;
+    color: #FFFFFF !important;
+}
+
+.btn-info:hover {
+    background-color: #4ab3d5 !important;
+    border-color: #4ab3d5 !important;
+    transform: translateY(-1px);
+}
+
+.btn-info:active {
+    background-color: #3a9fc5 !important;
+    border-color: #3a9fc5 !important;
+    transform: scale(0.98);
+}
+
+.btn-info:focus {
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.3);
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.btn-outline-light:active {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(0.98);
+}
+
+.btn-outline-light:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.2);
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268 !important;
+}
+
+.btn-secondary:active {
+    background-color: #4e555b !important;
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background-color: var(--dasa-dark-blue) !important;
+    border-color: var(--dasa-dark-blue) !important;
+}
+
+.btn-primary:hover {
+    background-color: #0a1e3d !important;
+    border-color: #0a1e3d !important;
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    background-color: #071630 !important;
+    border-color: #071630 !important;
+    transform: scale(0.98);
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.25rem rgba(13, 39, 77, 0.3);
+}
+
+.btn-sm {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-sm:hover {
+    transform: translateY(-1px);
+}
+
+.btn-sm:active {
+    transform: scale(0.97);
+}
+
+.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.3);
+    outline: none;
+}
+
+/* ==========================================================================
    Campos de formulário
    ========================================================================== */
 .form-control, .form-select {
@@ -56,7 +155,12 @@ html {
 }
 
 .form-control:focus, .form-select:focus {
-    box-shadow: 0 0 0 0.25rem rgba(var(--dasa-light-blue-accent), 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.3);
+    border-color: var(--dasa-light-blue-accent) !important;
+    outline: none;
+}
+
+.form-control:active, .form-select:active {
     border-color: var(--dasa-light-blue-accent) !important;
 }
 
@@ -70,9 +174,30 @@ html {
    ========================================================================== */
 .badge {
     font-size: 0.75rem;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge.bg-success {
+    background-color: #10b981 !important;
+    color: #FFFFFF !important;
+}
+
+.badge.bg-warning {
+    background-color: #fbbf24 !important;
+    color: #1f2937 !important;
+}
+
+.badge.bg-danger {
+    background-color: #ef4444 !important;
+    color: #FFFFFF !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6b7280 !important;
+    color: #FFFFFF !important;
 }
 
 /* ==========================================================================
@@ -117,7 +242,7 @@ html {
 }
 
 /* ==========================================================================
-   Checkboxes Customizados
+   Checkboxes e Switches Customizados
    ========================================================================== */
 .form-check-input {
     appearance: none;
@@ -143,8 +268,41 @@ html {
 }
 
 .form-check-input:focus {
-    box-shadow: 0 0 0 0.25rem rgba(var(--dasa-light-blue-accent), 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.25);
     border-color: var(--dasa-light-blue-accent);
+}
+
+/* Switches */
+.form-switch .form-check-input {
+    width: 48px;
+    height: 24px;
+    border-radius: 2rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba(255,255,255,0.9)'/%3e%3c/svg%3e");
+    background-position: left center;
+    transition: background-color 0.2s, background-position 0.2s;
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--dasa-light-blue-accent);
+    background-position: right center;
+    border: none;
+}
+
+.form-check-label {
+    color: #FFFFFF;
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(90, 195, 229, 0.3);
+    outline: none;
+}
+
+.form-switch .form-check-input:active {
+    filter: brightness(1.1);
 }
 
 /* ==========================================================================
