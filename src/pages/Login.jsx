@@ -29,7 +29,7 @@ function Login() {
         <div className="login-card">
           <div className="login-header">
             <div className="logo-container">
-              <img src="/img/logo-removebg-preview.png" alt="LabSync Logo" className="login-logo" />
+              <img src="/labsync-dashboard/img/logo-removebg-preview.png" alt="LabSync Logo" className="login-logo" />
             </div>
             <h1 className="login-title">LabSync</h1>
             <p className="login-subtitle">Sistema de Gestão Laboratorial</p>

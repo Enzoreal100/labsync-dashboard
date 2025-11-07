@@ -14,7 +14,7 @@ function Sidebar({ currentPage, onNavigate, onLogout }) {
   return (
     <aside className="sidebar d-flex flex-column p-3">
       <div className="brand d-flex align-items-center justify-content-center mb-2 mt-2">
-        <img src="/img/logo-removebg-preview.png" alt="LabSync Logo" style={{ width: '180px', height: '180px' }} />
+        <img src="/labsync-dashboard/img/logo-removebg-preview.png" alt="LabSync Logo" style={{ width: '180px', height: '180px' }} />
       </div>
 
       <nav className="nav flex-column mb-auto">
