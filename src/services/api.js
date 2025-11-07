@@ -1,6 +1,6 @@
 // Configuração base da API
-const API_BASE_URL = 'https://labsync-app-service-gxcsahdpexbcebey.brazilsouth-01.azurewebsites.net/api';
-
+// const API_BASE_URL = 'https://labsync-app-service-gxcsahdpexbcebey.brazilsouth-01.azurewebsites.net/api';
+const API_BASE_URL = 'http://localhost:8080/api'
 // Função para obter o token de acesso
 function getAccessToken() {
   return localStorage.getItem('accessToken');

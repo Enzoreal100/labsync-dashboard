@@ -35,11 +35,11 @@ function VisaoGeral() {
     
     // Dados de fallback padrão
     const fallbackOrders = [
-      { id: "LOG-1001", user: "Ana Silva", items: 3 },
-      { id: "LOG-1002", user: "Bruno Costa", items: 5 },
-      { id: "LOG-1003", user: "Carla Mendes", items: 2 },
-      { id: "LOG-1004", user: "Daniel Oliveira", items: 4 },
-      { id: "LOG-1005", user: "Elisa Santos", items: 1 }
+      { id: "LOG-1001", user: "Ana Silva", items: 3, operationType: "Take" },
+      { id: "LOG-1002", user: "Bruno Costa", items: 5, operationType: "Return" },
+      { id: "LOG-1003", user: "Carla Mendes", items: 2, operationType: "Take" },
+      { id: "LOG-1004", user: "Daniel Oliveira", items: 4, operationType: "Take" },
+      { id: "LOG-1005", user: "Elisa Santos", items: 1, operationType: "Return" }
     ]
     
     try {
@@ -48,10 +48,11 @@ function VisaoGeral() {
       console.log('Logs API Response:', logsResponse)
       
       if (logsResponse.success && logsResponse.data && Array.isArray(logsResponse.data) && logsResponse.data.length > 0) {
-        const formattedOrders = logsResponse.data.slice(0, 5).map(item => ({
-          id: item.id || `LOG-${item.id}`,
-          user: item.user?.name || item.userName || 'Usuário Desconhecido',
-          items: item.items?.length || item.itemCount || 0
+        const formattedOrders = logsResponse.data.slice(0, 5).map(log => ({
+          id: log.id || `LOG-${log.id}`,
+          user: log.user?.name || log.userName || 'Usuário Desconhecido',
+          items: log.item?.length || log.items?.length || log.itemCount || 0,
+          operationType: log.operationType || 'N/A'
         }))
         setOrdersData(formattedOrders)
       } else {
@@ -146,9 +147,10 @@ function VisaoGeral() {
   ]
 
   const exportCSV = () => {
-    let csv = 'Pedido,Usuário,Itens\n'
+    let csv = 'Pedido,Usuário,Tipo,Itens\n'
     ordersData.forEach(o => {
-      csv += `${o.id},${o.user},${o.items}\n`
+      const tipo = o.operationType === 'Take' ? 'Retirada' : o.operationType === 'Return' ? 'Devolução' : o.operationType
+      csv += `${o.id},${o.user},${tipo},${o.items}\n`
     })
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -285,13 +287,14 @@ function VisaoGeral() {
                   <tr>
                     <th>Pedido</th>
                     <th>Usuário</th>
+                    <th>Tipo</th>
                     <th>Itens</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loading ? (
                     <tr>
-                      <td colSpan="3" className="text-center">
+                      <td colSpan="4" className="text-center">
                         <div className="spinner-border spinner-border-sm text-light me-2" role="status">
                           <span className="visually-hidden">Carregando...</span>
                         </div>
@@ -303,12 +306,17 @@ function VisaoGeral() {
                       <tr key={order.id}>
                         <td><strong>{order.id}</strong></td>
                         <td>{order.user}</td>
+                        <td>
+                          <span className={`badge ${order.operationType === 'Take' ? 'bg-primary' : 'bg-success'}`}>
+                            {order.operationType === 'Take' ? 'Retirada' : order.operationType === 'Return' ? 'Devolução' : order.operationType}
+                          </span>
+                        </td>
                         <td>{order.items}</td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="3" className="text-center text-white-50">
+                      <td colSpan="4" className="text-center text-white-50">
                         Nenhuma solicitação recente
                       </td>
                     </tr>
